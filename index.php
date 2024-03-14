@@ -2,19 +2,28 @@
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Factory\AppFactory;
+use Twig\Environment;
+use Twig\Loader\FilesystemLoader;
 
-// require __DIR__ . '/../vendor/autoload.php';
 require __DIR__ . '/vendor/autoload.php';
+
+$loader = new FilesystemLoader('templates');
+$view = new Environment($loader);
+// $loader = new \Twig\Loader\FilesystemLoader(__DIR__ . '/templates');
 
 $app = AppFactory::create();
 
-$app->get('/', function (Request $request, Response $response, $args) {
-    $response->getBody()->write("Hello world!111111111111111");
+$app->get('/', function (Request $request, Response $response, $args) use ($view) {
+    $body = $view->render('index.twig');
+    $response->getBody()->write($body);
     return $response;
 });
 
-$app->get('/about', function (Request $request, Response $response, $args) {
-    $response->getBody()->write("about 222");
+$app->get('/about', function (Request $request, Response $response, $args) use ($view) {
+    $body = $view->render('about.twig', [
+        'name'=>'Max'
+    ]);
+    $response->getBody()->write($body);
     return $response;
 });
 
