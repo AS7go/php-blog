@@ -17,9 +17,9 @@ services:
     image: mysql:8.0
     environment:
       MYSQL_ROOT_PASSWORD: secret
-      MYSQL_DATABASE: php_blog
-      MYSQL_USER: root
-      MYSQL_PASSWORD: secret
+      MYSQL_DATABASE: blog_php
+      # MYSQL_USER: root # при MYSQL_ROOT_PASSWORD нужно убрать эту строку
+      # MYSQL_PASSWORD: secret # и эту строку убрать
     volumes:
       - ./mysql-data:/var/lib/mysql
     ports:
