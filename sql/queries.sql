@@ -17,3 +17,5 @@ INSERT INTO post (title, url_key, content, description, published_date) VALUES (
 INSERT INTO post (title, url_key, content, description, published_date) VALUES ('Third post', 'third-hello-world','Contrary to popular 3','My 3 blog post','2019-10-04 10:00:00');
 
 SELECT * FROM post;
+
+UPDATE post SET image_path = 'public/images'
