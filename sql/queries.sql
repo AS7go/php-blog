@@ -20,5 +20,5 @@ SELECT * FROM post;
 
 UPDATE post SET image_path = 'public/images'
 
-UPDATE post SET image_path = 'public/images/cristmas.png' WHERE post_id = 6;
+UPDATE post SET image_path = 'public/images/christmas.png' WHERE post_id = 6;
 
