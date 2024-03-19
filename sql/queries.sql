@@ -19,3 +19,6 @@ INSERT INTO post (title, url_key, content, description, published_date) VALUES (
 SELECT * FROM post;
 
 UPDATE post SET image_path = 'public/images'
+
+UPDATE post SET image_path = 'public/images/cristmas.png' WHERE post_id = 6;
+
