@@ -1,5 +1,6 @@
 <?php
 
+use Blog\Database;
 use Blog\LatestPosts;
 use Blog\Slim\TwigMiddleware;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -9,6 +10,7 @@ use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 use Blog\PostMapper;
 use DI\ContainerBuilder;
+use DevCoder\DotEnv;
 
 require __DIR__ . '/vendor/autoload.php';
 
@@ -17,30 +19,25 @@ require __DIR__ . '/vendor/autoload.php';
 
 $builder = new ContainerBuilder();
 $builder->addDefinitions('config/di.php');
+(new DotEnv(__DIR__ . '/.env'))->load();
+
+// echo getenv('DATABASE_DSN');
+
 
 $container = $builder->build();
 
 AppFactory::setContainer($container);
 
-$config = include 'config/database.php';
-$dsn = $config['dsn'];
-$username = $config['username'];
-$password = $config['password'];
 
-try {
-    $connection = new PDO($dsn, $username, $password);
-    $connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $connection->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-} catch (PDOException $exception) {
-    echo 'Database error: ' . $exception->getMessage();
-    die();
-}
 
 // Create app
 $app = AppFactory::create();
 
 $view = $container->get(Environment::class);
+
 $app->add(new TwigMiddleware($view));
+
+$connection = $container->get(Database::class)->getConnection();
 
 $app->get('/', function (Request $request, Response $response) use ($view, $connection) {
     $latestPosts = new LatestPosts($connection);
