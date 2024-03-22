@@ -16,8 +16,15 @@ return [
     ->constructorParameter('loader', get(FilesystemLoader::class)),
 
     Database::class => autowire()
+    ->constructorParameter('connection', get(PDO::class)),
+
+
+    PDO::class => autowire()
     ->constructorParameter('dsn', getenv('DATABASE_DSN'))
     ->constructorParameter('username', getenv('DATABASE_USER'))
     ->constructorParameter('password', getenv('DATABASE_PASSWORD'))
+    ->constructorParameter('options', []),
+
+
 
 ];
