@@ -4,20 +4,18 @@ declare(strict_types=1);
 
 namespace Blog;
 
-use PDO;
-
 class LatestPosts
 {
-    private PDO $connection;
+    private Database $database;
 
-    public function __construct(PDO $connection)
+    public function __construct(Database $database)
     {
-        $this->connection = $connection;
+        $this->database = $database;
     }
 
     public function get(int $limit): ?array
     {
-        $statement = $this->connection->prepare(
+        $statement = $this->database->getConnection()->prepare(
             'SELECT * FROM post ORDER BY published_date ASC LIMIT '.$limit
         );
 

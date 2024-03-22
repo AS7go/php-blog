@@ -9,26 +9,19 @@ use Slim\Factory\AppFactory;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 use Blog\PostMapper;
+use Blog\Route\HomePage;
 use DI\ContainerBuilder;
 use DevCoder\DotEnv;
 
 require __DIR__ . '/vendor/autoload.php';
 
-// $loader = new FilesystemLoader('templates');
-// $view = new Environment($loader);
-
 $builder = new ContainerBuilder();
 $builder->addDefinitions('config/di.php');
 (new DotEnv(__DIR__ . '/.env'))->load();
 
-// echo getenv('DATABASE_DSN');
-
-
 $container = $builder->build();
 
 AppFactory::setContainer($container);
-
-
 
 // Create app
 $app = AppFactory::create();
@@ -39,16 +32,18 @@ $app->add(new TwigMiddleware($view));
 
 $connection = $container->get(Database::class)->getConnection();
 
-$app->get('/', function (Request $request, Response $response) use ($view, $connection) {
-    $latestPosts = new LatestPosts($connection);
-    $posts = $latestPosts->get(3);
+$app->get('/', HomePage::class . ':execute');
 
-    $body = $view->render('index.twig', [
-        'posts' =>$posts
-    ]);
-    $response->getBody()->write($body);
-    return $response;
-});
+// $app->get('/', function (Request $request, Response $response) use ($view, $connection) {
+//     $latestPosts = new LatestPosts($connection);
+//     $posts = $latestPosts->get(3);
+
+//     $body = $view->render('index.twig', [
+//         'posts' =>$posts
+//     ]);
+//     $response->getBody()->write($body);
+//     return $response;
+// });
 
 $app->get('/about', function (Request $request, Response $response) use ($view) {
     $body = $view->render('about.twig', [
