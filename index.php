@@ -1,15 +1,18 @@
 <?php
 
 use Blog\Database;
-use Blog\LatestPosts;
+// use Blog\LatestPosts;
 use Blog\Slim\TwigMiddleware;
-use Psr\Http\Message\ResponseInterface as Response;
-use Psr\Http\Message\ServerRequestInterface as Request;
+// use Psr\Http\Message\ResponseInterface as Response;
+// use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Factory\AppFactory;
 use Twig\Environment;
-use Twig\Loader\FilesystemLoader;
-use Blog\PostMapper;
+// use Twig\Loader\FilesystemLoader;
+// use Blog\PostMapper;
+use Blog\Route\AboutPage;
+use Blog\Route\BlogPage;
 use Blog\Route\HomePage;
+use Blog\Route\PostPage;
 use DI\ContainerBuilder;
 use DevCoder\DotEnv;
 
@@ -27,10 +30,11 @@ AppFactory::setContainer($container);
 $app = AppFactory::create();
 
 $view = $container->get(Environment::class);
+$app->add($container->get(TwigMiddleware::class));
 
-$app->add(new TwigMiddleware($view));
+// $app->add(new TwigMiddleware($view));
 
-$connection = $container->get(Database::class)->getConnection();
+// $connection = $container->get(Database::class)->getConnection();
 
 $app->get('/', HomePage::class . ':execute');
 
@@ -45,48 +49,53 @@ $app->get('/', HomePage::class . ':execute');
 //     return $response;
 // });
 
-$app->get('/about', function (Request $request, Response $response) use ($view) {
-    $body = $view->render('about.twig', [
-        'name' => 'Max'
-    ]);
-    $response->getBody()->write($body);
-    return $response;
-});
+$app->get('/about', AboutPage::class);
 
-$app->get('/blog[/{page}]', function (Request $request, Response $response,$args) use ($view, $connection) {
-    $postMapper = new PostMapper($connection);
+// $app->get('/about', function (Request $request, Response $response) use ($view) {
+//     $body = $view->render('about.twig', [
+//         'name' => 'Max'
+//     ]);
+//     $response->getBody()->write($body);
+//     return $response;
+// });
 
-    $page = isset($args['page']) ? (int) $args['page'] : 1;
-    $limit = 2;
+$app->get('/blog[/{page}]', BlogPage::class);
 
-    $posts = $postMapper->getList($page, $limit, 'DESC');
+// $app->get('/blog[/{page}]', function (Request $request, Response $response,$args) use ($view, $connection) {
+//     $postMapper = new PostMapper($connection);
 
-    $totalCount = $postMapper->getTotalCount();
-    $body = $view->render('blog.twig', [
-        'posts' =>$posts,
-        'pagination' => [
-            'current' => $page,
-            'paging' => ceil($totalCount / $limit),
-        ],
-    ]);
-    $response->getBody()->write($body);
-    return $response;
-});
+//     $page = isset($args['page']) ? (int) $args['page'] : 1;
+//     $limit = 2;
 
+//     $posts = $postMapper->getList($page, $limit, 'DESC');
 
-$app->get('/{url_key}', function (Request $request, Response $response, $args) use ($view, $connection) {
-    $postMapper = new PostMapper($connection);
-    $post = $postMapper->getByUrlKey((string) $args['url_key']);
+//     $totalCount = $postMapper->getTotalCount();
+//     $body = $view->render('blog.twig', [
+//         'posts' =>$posts,
+//         'pagination' => [
+//             'current' => $page,
+//             'paging' => ceil($totalCount / $limit),
+//         ],
+//     ]);
+//     $response->getBody()->write($body);
+//     return $response;
+// });
 
-    if (empty($post)) {
-        $body = $view->render('not-found.twig');
-    } else {
-        $body = $view->render('post.twig', [
-            'post' => $post
-        ]);
-    }
-    $response->getBody()->write($body);
-    return $response;
-});
+$app->get('/{url_key}', PostPage::class);
+
+// $app->get('/{url_key}', function (Request $request, Response $response, $args) use ($view, $connection) {
+//     $postMapper = new PostMapper($connection);
+//     $post = $postMapper->getByUrlKey((string) $args['url_key']);
+
+//     if (empty($post)) {
+//         $body = $view->render('not-found.twig');
+//     } else {
+//         $body = $view->render('post.twig', [
+//             'post' => $post
+//         ]);
+//     }
+//     $response->getBody()->write($body);
+//     return $response;
+// });
 
 $app->run();
