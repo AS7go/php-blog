@@ -14,18 +14,14 @@ use Twig\Environment;
 class TwigMiddleware implements MiddlewareInterface
 {
 
-    private Environment $environment;
-
-    public function __construct(Environment $environment)
+    public function __construct(Environment $environment, AssetExtension $assetExtension)
     {
-        $this->environment = $environment;
+        $environment->addExtension ($assetExtension);
     }
 
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $this->environment->addExtension (new AssetExtension($request));
-
         return $handler->handle($request);
     }
 }
