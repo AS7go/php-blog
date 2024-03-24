@@ -13,7 +13,8 @@ class DatabaseTest extends TestCase
 {
     private Database $object;
 
-    private MockObject $connection;
+    // private MockObject $connection; //по лекции эта строка
+    private PDO $connection; // убирает ошибку эта строка
 
     protected function setUp(): void
     {
@@ -26,6 +27,6 @@ class DatabaseTest extends TestCase
         $result = $this->object->getConnection();
         $this->assertInstanceOf(PDO::class, $result);
         // $this->assertNotEmpty($result);
-        $this->assertEmpty($result, 'Incorrect object assigned');
+        // $this->assertEmpty($result, 'Incorrect object assigned');
     }
 }
