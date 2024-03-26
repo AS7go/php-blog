@@ -13,8 +13,8 @@ class DatabaseTest extends TestCase
 {
     private Database $object;
 
-    // private MockObject $connection; //по лекции эта строка
-    private PDO $connection; // убирает ошибку эта строка
+    private MockObject $connection; //по лекции эта строка
+    // private PDO $connection; // убирает ошибку эта строка
 
     protected function setUp(): void
     {
