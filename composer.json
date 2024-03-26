@@ -17,7 +17,8 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Blog\\Test\\": "Test/"
+            "Blog\\Test\\": "Test/",
+            "Blog\\Test\\Integration\\": "tests/Integration/"
         }
     },
     "require-dev": {
